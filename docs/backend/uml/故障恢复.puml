@@ -1,0 +1,50 @@
+@startuml
+title 故障恢复与降级流程
+
+participant "客户端" as Client
+participant "网关" as Gateway
+participant "服务实例" as Service
+participant "熔断器" as CircuitBreaker
+participant "降级服务" as Fallback
+participant "Nacos注册中心" as Nacos
+
+Client -> Gateway: 1. 发送请求
+Gateway -> Nacos: 2. 获取健康实例
+Nacos --> Gateway: 3. 返回可用实例列表
+
+alt 服务正常
+  Gateway -> Service: 4. 调用目标服务
+  Service --> Gateway: 5. 返回正常响应
+  Gateway --> Client: 6. 返回结果
+else 服务异常
+  Gateway -> Service: 7. 调用失败(超时/错误)
+  Service --> Gateway: 8. 返回错误
+  Gateway -> CircuitBreaker: 9. 记录失败次数
+  CircuitBreaker -> CircuitBreaker: 10. 判断是否熔断
+
+  alt 未达到熔断阈值
+    Gateway -> Service: 11. 重试其他实例
+  else 达到熔断阈值
+    CircuitBreaker --> Gateway: 12. 触发熔断
+    Gateway -> Fallback: 13. 调用降级服务
+    Fallback --> Gateway: 14. 返回降级数据
+    Gateway --> Client: 15. 返回降级响应
+  end
+end
+
+Note over CircuitBreaker: 熔断器状态机:\nCLOSED → OPEN → HALF-OPEN
+
+== 自动恢复流程 ==
+
+CircuitBreaker -> CircuitBreaker: 16. 定时检查\n(进入HALF-OPEN状态)
+CircuitBreaker -> Service: 17. 发送探测请求
+
+alt 服务恢复
+  Service --> CircuitBreaker: 18. 成功响应
+  CircuitBreaker -> CircuitBreaker: 19. 关闭熔断(CLOSED)
+else 服务仍异常
+  Service --> CircuitBreaker: 20. 失败响应
+  CircuitBreaker -> CircuitBreaker: 21. 保持熔断(OPEN)
+end
+
+@enduml

@@ -1,0 +1,59 @@
+###
+POST http://localhost:10086/api/create
+Content-Type: application/json
+
+{
+  "title": "测试标题",
+  "description": "这是一个测试",
+  "start_time": "2025-12-12 00:00:00",
+  "master": {
+    "name": "测试主队",
+    "logo": "url",
+    "members": [
+      {
+        "name": "测试队员1",
+        "position": "队长"
+      },
+      {
+        "name": "测试队员2",
+        "position": "队员"
+      }
+    ]
+  },
+  "guest": {
+    "name": "测试客队",
+    "logo": "url",
+    "members": [
+      {
+        "name": "测试队员3",
+        "position": "队长"
+      },
+      {
+        "name": "测试队员4",
+        "position": "队员"
+      }
+    ]
+  }
+}
+
+###
+POST http://localhost:10086/api/sync
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzUxMiJ9.eyJnYW1lSWQiOiIzOGU0NjYzNWI4NDg0NjljODhkOTY1MmNmOTgxNWE2MyIsInN1YiI6IjM4ZTQ2NjM1Yjg0ODQ2OWM4OGQ5NjUyY2Y5ODE1YTYzIiwiaWF0IjoxNzY2NDc3MDM1fQ.iGWPN3SwRdnfmk0t7cDgXmhhU9emhIOK3QgCT6DLx3KhS2Pz5qlhRNFpMV2JTafqgne9HZ1x0b_721JISIvHgw",
+  "team": "master",
+  "members": [
+    "测试队员1",
+    "测试队员4"
+  ],
+  "action": "跳球",
+  "score": 10,
+  "time": "00:10:10"
+}
+
+###
+GET http://localhost:10086/api/list
+
+###
+GET http://localhost:10086/api/view?uuid=38e46635b848469c88d9652cf9815a63

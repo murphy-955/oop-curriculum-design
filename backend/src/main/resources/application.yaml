@@ -1,0 +1,19 @@
+server:
+  port: 10086
+
+# redis 配置
+spring:
+  data:
+    redis:
+      port: 6379
+      host: 106.15.90.163
+      database: 0
+      timeout: 10000
+
+  threads:
+    virtual:
+      enabled: true
+
+jwt:
+  token:
+    tokenSignKey: 4Pe5KKKoVYj8nJw7MHQ2PpIPjdc5vhIaJUge38cMkc9be3CLIl4vxt2cYLzxBMFDdWEgWj8d9B4BYr73DqWP0g==

@@ -68,7 +68,7 @@ public class GameService {
         initEvent.setAction("init");
         initEvent.setScore(0);
         initEvent.setTime("00:00:00");
-        
+
         // 将初始事件保存到Redis列表
         redisUtils.lPush(GAME_EVENTS_PREFIX + gameId, initEvent);
 
@@ -79,15 +79,15 @@ public class GameService {
     /**
      * 同步比赛信息
      *
-     * @author : 李泽聿
-     * @since : 2025-12-23 15:24
      * @param request ：请求对象
      * @return : boolean
+     * @author : 李泽聿
+     * @since : 2025-12-23 15:24
      */
     public boolean syncGame(SyncGameRequest request) {
         // 验证令牌
         if (!jwtUtils.validateToken(request.getToken())) {
-            log.info("token 错误{}",request.getToken());
+            log.info("token 错误{}", request.getToken());
             return false;
         }
 
@@ -110,7 +110,7 @@ public class GameService {
         } else if ("guest".equals(request.getTeam())) {
             gameInfo.setGuestScore(gameInfo.getGuestScore() + request.getScore());
         }
-        
+
         // 保存已更新的比赛信息
         redisUtils.set(GAME_PREFIX + gameId, gameInfo);
 
@@ -134,9 +134,9 @@ public class GameService {
     /**
      * 获取所有比赛的列表
      *
+     * @return : java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      * @author : 李泽聿
      * @since : 2025-12-23 15:24
-     * @return : java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getGameList() {
@@ -150,7 +150,7 @@ public class GameService {
                 gameList.add(gameItem);
             }
         }
-        
+
         return gameList;
     }
 

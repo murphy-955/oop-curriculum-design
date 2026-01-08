@@ -84,7 +84,7 @@ public class GameController {
 
         // 获取 所有往届赛事
         List<GameEvent> events = gameService.getGameEvents(uuid);
-        
+
         // 先发送所有过去的事件
         for (GameEvent event : events) {
             try {

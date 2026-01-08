@@ -1,5 +1,5 @@
 ###
-POST http://localhost:10086/api/create
+POST http://106.15.90.163:10086/api/create
 Content-Type: application/json
 
 {
@@ -37,11 +37,11 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:10086/api/sync
+POST http://106.15.90.163:10086//api/sync
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzUxMiJ9.eyJnYW1lSWQiOiIzOGU0NjYzNWI4NDg0NjljODhkOTY1MmNmOTgxNWE2MyIsInN1YiI6IjM4ZTQ2NjM1Yjg0ODQ2OWM4OGQ5NjUyY2Y5ODE1YTYzIiwiaWF0IjoxNzY2NDc3MDM1fQ.iGWPN3SwRdnfmk0t7cDgXmhhU9emhIOK3QgCT6DLx3KhS2Pz5qlhRNFpMV2JTafqgne9HZ1x0b_721JISIvHgw",
+  "token": "eyJhbGciOiJIUzUxMiJ9.eyJnYW1lSWQiOiI1N2I5ZWY4Nzc3MDA0YWZmYWM4NmYzN2VlMjIxMGIzYSIsInN1YiI6IjU3YjllZjg3NzcwMDRhZmZhYzg2ZjM3ZWUyMjEwYjNhIiwiaWF0IjoxNzY3ODQyODY0fQ.d5QUc1byc-JjwMGId6yNVINnqQo_RcSfKgbHWLndxC7FMNMgz8oh1I1EYQhgN9l_kubdtSFEJhxCNaFTn12f0Q",
   "team": "master",
   "members": [
     "测试队员1",
@@ -53,7 +53,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:10086/api/list
+GET http://106.15.90.163:10086/api/list
 
 ###
-GET http://localhost:10086/api/view?uuid=38e46635b848469c88d9652cf9815a63
+GET http://106.15.90.163:10086/api/view?uuid=57b9ef8777004affac86f37ee2210b3a

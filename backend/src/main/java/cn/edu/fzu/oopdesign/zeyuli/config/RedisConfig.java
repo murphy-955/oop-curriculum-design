@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -30,5 +31,19 @@ public class RedisConfig {
         
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    /**
+     *
+     * @author : 李泽聿
+     * @since : 2025-12-24 10:43
+     * @param factory :
+     * @return : org.springframework.data.redis.listener.RedisMessageListenerContainer
+     */
+    @Bean
+    public RedisMessageListenerContainer container(RedisConnectionFactory factory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(factory);
+        return container;
     }
 }

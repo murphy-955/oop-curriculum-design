@@ -6,7 +6,6 @@ import cn.edu.fzu.oopdesign.zeyuli.utils.RedisUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -54,7 +53,7 @@ public class GameService {
         gameInfo.setUuid(gameId);
         gameInfo.setTitle(request.getTitle());
         gameInfo.setDescription(request.getDescription());
-        gameInfo.setStart_time(request.getStart_time());
+        gameInfo.setStartTime(request.getStartTime());
         gameInfo.setMaster(request.getMaster());
         gameInfo.setGuest(request.getGuest());
         gameInfo.setMasterScore(0);

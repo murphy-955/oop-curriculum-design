@@ -37,11 +37,11 @@ Content-Type: application/json
 }
 
 ###
-POST http://106.15.90.163:10086//api/sync
+POST http://106.15.90.163:10086/api/sync
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzUxMiJ9.eyJnYW1lSWQiOiI1N2I5ZWY4Nzc3MDA0YWZmYWM4NmYzN2VlMjIxMGIzYSIsInN1YiI6IjU3YjllZjg3NzcwMDRhZmZhYzg2ZjM3ZWUyMjEwYjNhIiwiaWF0IjoxNzY3ODQyODY0fQ.d5QUc1byc-JjwMGId6yNVINnqQo_RcSfKgbHWLndxC7FMNMgz8oh1I1EYQhgN9l_kubdtSFEJhxCNaFTn12f0Q",
+  "token": "eyJhbGciOiJIUzUxMiJ9.eyJnYW1lSWQiOiJjODg2Y2RjOThiMjg0YmUwOTUyNjkzMjExZDA4MWNkYSIsInN1YiI6ImM4ODZjZGM5OGIyODRiZTA5NTI2OTMyMTFkMDgxY2RhIiwiaWF0IjoxNzY4NTI4NTgyfQ.8KhBA3lTyPdJzvtRjfDx4zeDVG_8hfnA-KGcRsJIqloY6jNQhHFZk7t-B7QP1pOtWmqM3KMCOdS_4RndilyPow",
   "team": "master",
   "members": [
     "测试队员1",
@@ -56,4 +56,4 @@ Content-Type: application/json
 GET http://106.15.90.163:10086/api/list
 
 ###
-GET http://106.15.90.163:10086/api/view?uuid=57b9ef8777004affac86f37ee2210b3a
+GET http://106.15.90.163:10086/api/view?uuid=fdaa0a4ee0f4414980b18c0dad5c497d

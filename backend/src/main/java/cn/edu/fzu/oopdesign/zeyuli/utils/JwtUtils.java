@@ -9,7 +9,11 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ *
+ *
+ * @author : 李泽聿
+ */
 @Component
 public class JwtUtils {
     @Value("${jwt.token.tokenSignKey}")

@@ -1,0 +1,25 @@
+@startuml
+participant Client as 用户客户端
+participant Controller as GameController
+participant Service as GameService
+participant Redis as RedisUtils
+
+Client -> Controller: GET /api/view?uuid={uuid}
+Controller -> Service: getGameInfo(uuid)
+Service -> Redis: get(game:{uuid})
+Redis --> Service: 返回GameInfo
+Service --> Controller: 返回GameInfo
+Controller -> Service: getGameEvents(uuid)
+Service -> Redis: lRange(game:events:{uuid}, 0, -1)
+Redis --> Service: 返回事件列表
+Service --> Controller: 返回事件列表
+Controller -> Client: 发送历史事件
+Controller -> Controller: 创建定时任务
+loop 每秒
+    Controller -> Service: getGameEvents(uuid)
+    Service -> Redis: lRange(game:events:{uuid}, 0, -1)
+    Redis --> Service: 返回事件列表
+    Service --> Controller: 返回事件列表
+    Controller -> Client: 发送最新事件
+end
+@enduml

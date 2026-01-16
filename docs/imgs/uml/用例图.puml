@@ -1,0 +1,9 @@
+@startuml
+actor 主持人 as Host
+actor 用户 as User
+
+Host -> (创建比赛)
+Host -> (同步比赛信息)
+User -> (查询比赛列表)
+User -> (观看比赛)
+@enduml

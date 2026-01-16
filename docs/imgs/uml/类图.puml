@@ -1,0 +1,39 @@
+@startuml
+package controller {
+    class GameController
+}
+
+package service {
+    class GameService
+}
+
+package model {
+    class GameInfo
+    class GameEvent
+    class Team
+    class Member
+    class CreateGameRequest
+    class SyncGameRequest
+    class Result
+}
+
+package utils {
+    class RedisUtils
+    class JwtUtils
+}
+
+package config {
+    class RedisConfig
+}
+
+GameController --> GameService
+GameService --> RedisUtils
+GameService --> JwtUtils
+GameService --> GameInfo
+GameService --> GameEvent
+GameController --> CreateGameRequest
+GameController --> SyncGameRequest
+GameController --> Result
+GameInfo --> Team
+Team --> Member
+@enduml

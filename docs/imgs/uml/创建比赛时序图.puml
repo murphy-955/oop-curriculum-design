@@ -1,0 +1,18 @@
+@startuml
+participant Client as 主持人客户端
+participant Controller as GameController
+participant Service as GameService
+participant Redis as RedisUtils
+
+Client -> Controller: POST /api/create
+Controller -> Service: createGame(request)
+Service -> Service: 生成UUID
+Service -> Service: 创建GameInfo对象
+Service -> Redis: set(game:{uuid}, gameInfo)
+Service -> Redis: hSet(games:list, {uuid}, gameItem)
+Service -> Service: 创建初始事件
+Service -> Redis: lPush(game:events:{uuid}, initEvent)
+Service -> Service: 生成JWT令牌
+Service -> Controller: 返回令牌
+Controller -> Client: 200 OK { "token": "..." }
+@enduml

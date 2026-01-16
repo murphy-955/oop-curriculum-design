@@ -3,13 +3,23 @@ package cn.edu.fzu.oopdesign.zeyuli.service;
 import cn.edu.fzu.oopdesign.zeyuli.model.*;
 import cn.edu.fzu.oopdesign.zeyuli.utils.JwtUtils;
 import cn.edu.fzu.oopdesign.zeyuli.utils.RedisUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ *
+ *
+ * @author : 李泽聿
+ * @since : 2025-12-23 15:23
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -17,8 +27,9 @@ public class GameService {
 
     private final RedisUtils redisUtils;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+
+    private final ObjectMapper objectMapper;
 
     // Redis key前缀
     private static final String GAME_PREFIX = "game:";
@@ -29,10 +40,10 @@ public class GameService {
     /**
      * 创建比赛
      *
-     * @author : 李泽聿
-     * @since : 2025-12-23 15:25
      * @param request ：请求对象
      * @return : java.lang.String
+     * @author : 李泽聿
+     * @since : 2025-12-23 15:25
      */
     public String createGame(CreateGameRequest request) {
         // 生成唯一的比赛ID
@@ -157,11 +168,10 @@ public class GameService {
     /**
      * 获取指定比赛的详细信息
      *
-     *
-     * @author : 李泽聿
-     * @since : 2025-12-23 15:22
      * @param gameId : 比赛ID
      * @return : cn.edu.fzu.oopdesign.zeyuli.model.GameInfo
+     * @author : 李泽聿
+     * @since : 2025-12-23 15:22
      */
     public GameInfo getGameInfo(String gameId) {
         return redisUtils.get(GAME_PREFIX + gameId, GameInfo.class);
@@ -170,10 +180,10 @@ public class GameService {
     /**
      * 获取指定比赛的活动列表
      *
-     * @author : 李泽聿
-     * @since : 2025-12-23 15:23
      * @param gameId : 比赛ID
      * @return : java.util.List<cn.edu.fzu.oopdesign.zeyuli.model.GameEvent>
+     * @author : 李泽聿
+     * @since : 2025-12-23 15:23
      */
     public List<GameEvent> getGameEvents(String gameId) {
         // 从Redis列表获取所有活动
@@ -181,5 +191,16 @@ public class GameService {
                 .stream()
                 .map(obj -> (GameEvent) obj)
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    public void sendEvent(SseEmitter emitter, GameEvent event) throws IOException {
+        // 1. 对象 → UTF-8 字节
+        byte[] utf8Bytes = objectMapper.writeValueAsBytes(event);
+        // 2. UTF-8 字节 → Java 字符串（内容正确）
+        String json = new String(utf8Bytes, StandardCharsets.UTF_8);
+        // 3. 发送
+        emitter.send(SseEmitter.event()
+                .name("message")
+                .data(json));
     }
 }

@@ -4,6 +4,8 @@ import cn.edu.fzu.oopdesign.zeyuli.enm.StatusCodeEnum;
 import cn.edu.fzu.oopdesign.zeyuli.model.*;
 import cn.edu.fzu.oopdesign.zeyuli.service.GameService;
 import cn.edu.fzu.oopdesign.zeyuli.utils.RedisUtils;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +19,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ *
+ * @author 李泽聿
+ */
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class GameController {
+    private final GameService gameService;
 
-    @Autowired
-    private GameService gameService;
+    private final RedisUtils redisUtils;
 
-    @Autowired
-    private RedisUtils redisUtils;
-
-    // Redis channel prefix
+    // Redis通道前缀
     private static final String GAME_CHANNEL_PREFIX = "game:channel:";
 
     /**
@@ -67,10 +72,11 @@ public class GameController {
      * 用户观看比赛，返回流式信息
      */
     @GetMapping(value = "/view", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter viewGame(@RequestParam String uuid) {
+    public SseEmitter viewGame(@RequestParam String uuid, HttpServletResponse response) {
+        response.setContentType("text/event-stream; charset=UTF-8");
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
-        // Get game info
+        // 获取比赛信息
         GameInfo gameInfo = gameService.getGameInfo(uuid);
         if (gameInfo == null) {
             try {
@@ -88,7 +94,7 @@ public class GameController {
         // 先发送所有过去的事件
         for (GameEvent event : events) {
             try {
-                emitter.send(event);
+                gameService.sendEvent(emitter, event);
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 return emitter;
@@ -96,15 +102,15 @@ public class GameController {
         }
 
         // 为新事件创建一个 Redis 消息监听器
-        // 为了简化，我们将使用轮询代替 Redis 的发布/订阅监听器
+        // 为了简化，使用轮询
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
             try {
-                // Get latest events (just the last one for simplicity)
+                // 获取最新的事件
                 List<GameEvent> latestEvents = gameService.getGameEvents(uuid);
                 if (!latestEvents.isEmpty()) {
                     GameEvent latestEvent = latestEvents.get(0);
-                    emitter.send(latestEvent);
+                    gameService.sendEvent(emitter, latestEvent);
                 }
             } catch (IOException e) {
                 executor.shutdown();
@@ -113,8 +119,8 @@ public class GameController {
         }, 1, 1, TimeUnit.SECONDS);
 
         // Handle connection close
-        emitter.onCompletion(() -> executor.shutdown());
-        emitter.onTimeout(() -> executor.shutdown());
+        emitter.onCompletion(executor::shutdown);
+        emitter.onTimeout(executor::shutdown);
         emitter.onError((e) -> executor.shutdown());
 
         return emitter;
